@@ -1,66 +1,59 @@
+
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f4f4f9;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Light background color */
     margin: 0;
     padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    flex-direction: column;
 }
-
 h1 {
-    color: #333;
-    margin-bottom: 20px;
-}
-
-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
     text-align: center;
+    color: #333;
 }
-
+.upload-container {
+    display: flex; /* Use flexbox for horizontal alignment */
+    justify-content: center; /* Center the items */
+    margin-top: 20px;
+}
+.upload-form {
+    background-color: #ffffff; /* White background for form */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px; /* Padding inside the form */
+    margin: 0 10px; /* Margin between forms */
+    width: 300px; /* Set a fixed width for each form */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+    transition: transform 0.2s; /* Animation on hover */
+}
+.upload-form:hover {
+    transform: scale(1.02); /* Slightly scale up on hover */
+}
+h2 {
+    color: #444; /* Darker color for headings */
+}
 input[type="file"] {
-    display: block;
-    margin: 10px auto;
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 16px;
+    margin-bottom: 10px; /* Space below the file input */
+    display: block; /* Block-level for full width */
 }
-
 input[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    width: 100%;
+    background-color: #007bff; /* Bootstrap blue */
+    color: white; /* White text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding for button */
+    width: 100%; /* Full width */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition for hover effect */
 }
-
 input[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue on hover */
 }
-
-#message {
-    margin-top: 15px;
-    font-weight: bold;
-    display: none; /* Hide initially */
-}
-
 .success {
-    color: green;
+    color: green; /* Style for success messages */
+    text-align: center; /* Center align messages */
+    margin-top: 10px; /* Space above messages */
 }
-
 .error {
-    color: red;
+    color: red; /* Style for error messages */
+    text-align: center; /* Center align messages */
+    margin-top: 10px; /* Space above messages */
 }

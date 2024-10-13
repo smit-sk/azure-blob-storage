@@ -6,10 +6,10 @@
     <title>File Upload</title>
     <link rel="stylesheet" href="../static/style.css"> <!-- Adjust this path as needed -->
     <script>
-        function uploadFile(event) {
+        function uploadToBlob(event) {
             event.preventDefault(); // Prevent the form from submitting the default way
 
-            const formData = new FormData(document.getElementById("uploadForm"));
+            const formData = new FormData(document.getElementById("uploadBlobForm"));
 
             fetch("/upload", {
                 method: "POST",
@@ -23,15 +23,46 @@
             })
             .then(data => {
                 // Display success message
-                const messageElement = document.getElementById("message");
+                const messageElement = document.getElementById("blobMessage");
                 messageElement.innerText = data.message;
                 messageElement.className = "success"; // Add success class
                 messageElement.style.display = "block"; // Show message
             })
             .catch(error => {
                 console.error('Error:', error);
-                const messageElement = document.getElementById("message");
-                messageElement.innerText = "Error uploading file.";
+                const messageElement = document.getElementById("blobMessage");
+                messageElement.innerText = "Error uploading file to Blob Storage.";
+                messageElement.className = "error"; // Add error class
+                messageElement.style.display = "block"; // Show message
+            });
+        }
+
+        function uploadToFileShare(event) {
+            event.preventDefault(); // Prevent the form from submitting the default way
+
+            const formData = new FormData(document.getElementById("uploadFileShareForm"));
+
+            fetch("/upload_to_files", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display success message
+                const messageElement = document.getElementById("fileShareMessage");
+                messageElement.innerText = data.message;
+                messageElement.className = "success"; // Add success class
+                messageElement.style.display = "block"; // Show message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageElement = document.getElementById("fileShareMessage");
+                messageElement.innerText = "Error uploading file to Azure Files.";
                 messageElement.className = "error"; // Add error class
                 messageElement.style.display = "block"; // Show message
             });
@@ -40,12 +71,26 @@
 </head>
 <body>
     <h1>Upload File</h1>
-    
-    <form id="uploadForm" onsubmit="uploadFile(event)">
-        <input type="file" name="file" required>
-        <input type="submit" value="Upload">
-    </form>
+    <div class="upload-container">
+        <!-- Upload to Blob Storage -->
+        <div class="upload-form">
+            <h2>Upload to Azure Blob Storage</h2>
+            <form id="uploadBlobForm" onsubmit="uploadToBlob(event)">
+                <input type="file" name="file" required>
+                <input type="submit" value="Upload to Blob Storage">
+            </form>
+            <p id="blobMessage" style="display:none;"></p> <!-- Placeholder for Blob Storage message display, hidden by default -->
+        </div>
 
-    <p id="message" style="display:none;"></p> <!-- Placeholder for message display, hidden by default -->
+        <!-- Upload to Azure File Share -->
+        <div class="upload-form">
+            <h2>Upload to Azure File Share</h2>
+            <form id="uploadFileShareForm" onsubmit="uploadToFileShare(event)">
+                <input type="file" name="file" required>
+                <input type="submit" value="Upload to File Share">
+            </form>
+            <p id="fileShareMessage" style="display:none;"></p> <!-- Placeholder for Azure File Share message display, hidden by default -->
+        </div>
+    </div>
 </body>
 </html>
