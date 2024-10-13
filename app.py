@@ -4,11 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# Azure Blob Storage configuration using full SAS URL format
-AZURE_STORAGE_ACCOUNT_URL = 'https://demo9824791765.blob.core.windows.net/'
-SAS_TOKEN = 'sv=2022-11-02&ss=bf&srt=sc&sp=rwdlaciytfx&se=2024-10-13T23:00:51Z&st=2024-10-13T15:00:51Z&sip=127.0.0.1&spr=https,http&sig=3BuhM9q3XHlhq48lqPQ9q6ibKBs1BzskZ0dYBRZ4nXo%3D'
-BLOB_CONTAINER_NAME = 'test-container'
-
 @app.route('/')
 def index():
     return render_template('upload.html')
@@ -55,7 +50,7 @@ def upload_to_files():
             return jsonify(message="File uploaded successfully to Azure File Share!"), 200
         
         except Exception as azure_error:
-
+            
             try:
                 # Fallback to local storage
                 local_path = os.path.join(os.getcwd(), 'uploads')
@@ -78,10 +73,21 @@ def upload_to_files():
 @app.route('/list_files', methods=['GET'])
 def list_files():
     try:
-        files = os.listdir('/share')
-        return jsonify(files=files)
-    except Exception as error:
-        return jsonify(error=str(error)), 500
+        # List all files and directories in the mounted Azure File Share
+        files_and_folders = []
+        
+        for root, dirs, files in os.walk('/share'):
+            for directory in dirs:
+                files_and_folders.append(f"Directory: {os.path.join(root, directory)}")
+            for file in files:
+                files_and_folders.append(f"File: {os.path.join(root, file)}")
+        
+        # Return the list as a JSON response
+        return jsonify(files_and_folders=files_and_folders), 200
+
+    except Exception as e:
+        return jsonify(message=f"Error listing files: {str(e)}"), 500
+
 
 if __name__ == '__main__':
     app.run(debug=True)

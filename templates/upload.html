@@ -58,8 +58,6 @@
                 messageElement.innerText = data.message;
                 messageElement.className = "success"; // Add success class
                 messageElement.style.display = "block"; // Show message
-
-                fileList();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -69,35 +67,35 @@
                 messageElement.style.display = "block"; // Show message
             });
         }
-    
         
-
-        async function fetchFileList() {
-            const fileList = document.getElementById('fileList');
-
-            try {
-                const response = await fetch('/list_files'); // Changed to use fetch instead of axios
-                const data = await response.json(); // Parse JSON response
-                fileList.innerHTML = ''; // Clear previous list
-
-                if (data.files && data.files.length) {
-                    data.files.forEach(file => {
-                        const li = document.createElement('li');
-                        li.textContent = file;
-                        fileList.appendChild(li);
-                    });
-                } else {
-                    fileList.innerHTML = '<li>No files found</li>';
-                }
-            } catch (error) {
-                console.error('Failed to fetch file list:', error);
-                fileList.innerHTML = '<li>Error fetching files</li>';
-            }
+        function loadFileList() {
+            // Fetch the list of files and directories from the server
+            fetch("/list_files", {
+                method: "GET",
+            })
+            .then(response => response.json())
+            .then(data => {
+                const fileListElement = document.getElementById("fileList");
+                fileListElement.innerHTML = ""; // Clear the existing list
+                
+                // Populate the list with the retrieved files and folders
+                data.files_and_folders.forEach(file => {
+                    const listItem = document.createElement("li");
+                    listItem.innerText = file;
+                    fileListElement.appendChild(listItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading file list:', error);
+            });
         }
 
-        // Fetch file list on page load
-        fetchFileList();    
-        </script>
+        // Load the file list when the page loads
+        window.onload = function() {
+            loadFileList();
+        }
+    
+    </script>
 </head>
 <body>
     <h1>Upload File</h1>
@@ -122,14 +120,15 @@
             <p id="fileShareMessage" style="display:none;"></p> <!-- Placeholder for Azure File Share message display, hidden by default -->
         </div>
 
-    </div>
-    <div class="upload-container">
-        <div class="upload-form">
-            <h2>File List</h2>
-            <ul id="fileList"></ul>
+        <!-- List of Files and Folders -->
+        <div class="file-list">
+            <h2>Files and Folders in Azure File Share</h2>
+            <ul id="fileList">
+                <!-- Files and folders will be dynamically loaded here -->
+            </ul>
         </div>
+
     </div>
     
-
 </body>
 </html>
