@@ -5,9 +5,9 @@ import os
 app = Flask(__name__)
 
 # Azure Blob Storage configuration using full SAS URL format
-AZURE_STORAGE_ACCOUNT_URL = 'https://demo9824791765.blob.core.windows.net/'
-SAS_TOKEN = 'sv=2022-11-02&ss=bf&srt=sc&sp=rwdlaciytfx&se=2024-10-13T23:00:51Z&st=2024-10-13T15:00:51Z&sip=127.0.0.1&spr=https,http&sig=3BuhM9q3XHlhq48lqPQ9q6ibKBs1BzskZ0dYBRZ4nXo%3D'
-BLOB_CONTAINER_NAME = 'test-container'
+# AZURE_STORAGE_ACCOUNT_URL = 'https://demo9824791765.blob.core.windows.net/'
+# SAS_TOKEN = 'sv=2022-11-02&ss=bf&srt=sc&sp=rwdlaciytfx&se=2024-10-13T23:00:51Z&st=2024-10-13T15:00:51Z&sip=127.0.0.1&spr=https,http&sig=3BuhM9q3XHlhq48lqPQ9q6ibKBs1BzskZ0dYBRZ4nXo%3D'
+# BLOB_CONTAINER_NAME = 'test-container'
 
 @app.route('/')
 def index():
