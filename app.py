@@ -5,9 +5,9 @@ import os
 app = Flask(__name__)
 
 # Azure Blob Storage configuration using full SAS URL format
-# AZURE_STORAGE_ACCOUNT_URL = 'https://demo9824791765.blob.core.windows.net/'
-# SAS_TOKEN = 'sv=2022-11-02&ss=bf&srt=sc&sp=rwdlaciytfx&se=2024-10-13T23:00:51Z&st=2024-10-13T15:00:51Z&sip=127.0.0.1&spr=https,http&sig=3BuhM9q3XHlhq48lqPQ9q6ibKBs1BzskZ0dYBRZ4nXo%3D'
-# BLOB_CONTAINER_NAME = 'test-container'
+AZURE_STORAGE_ACCOUNT_URL = 'https://demo9824791765.blob.core.windows.net/'
+SAS_TOKEN = 'sv=2022-11-02&ss=bf&srt=sc&sp=rwdlaciytfx&se=2024-10-13T23:00:51Z&st=2024-10-13T15:00:51Z&sip=127.0.0.1&spr=https,http&sig=3BuhM9q3XHlhq48lqPQ9q6ibKBs1BzskZ0dYBRZ4nXo%3D'
+BLOB_CONTAINER_NAME = 'test-container'
 
 @app.route('/')
 def index():
@@ -33,27 +33,47 @@ def upload_file():
 
 @app.route('/upload_to_files', methods=['POST'])
 def upload_to_files():
-    if request.method == 'POST':
-        file = request.files['file']
-        if file:
-            # Check if the app is running in Azure
-            if os.environ.get('AZURE_ENVIRONMENT') == 'true':
-                file_path = os.path.join('/share', file.filename)  # Azure mounted path
-            else:
-                # Use a temporary path for local development
-                file_path = os.path.join(os.getcwd(), 'uploads', file.filename)  # Local path
+    if 'file' not in request.files:
+        return jsonify(message="No file part"), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify(message="No selected file"), 400
+
+    if file:
+        try:
+            # First, try to save to the Azure File Share path
+            azure_path = '/share'
+            file_path = os.path.join(azure_path, file.filename)
             
-            # Ensure the local uploads directory exists
-            if not os.path.exists(os.path.dirname(file_path)):
-                os.makedirs(os.path.dirname(file_path))
-
-            # Save the file
+            # Ensure the directory exists
+            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            
+            # Attempt to save the file
             file.save(file_path)
+            
+            return jsonify(message="File uploaded successfully to Azure File Share!"), 200
+        
+        except Exception as azure_error:
+            
+            try:
+                # Fallback to local storage
+                local_path = os.path.join(os.getcwd(), 'uploads')
+                file_path = os.path.join(local_path, file.filename)
+                
+                # Ensure the local directory exists
+                os.makedirs(local_path, exist_ok=True)
+                
+                # Save to local path
+                file.save(file_path)
+                
+                return jsonify(message="File uploaded successfully to local storage!"), 200
+            
+            except Exception as local_error:
+                
+                return jsonify(message=f"Failed to upload file: {str(local_error)}"), 500
 
-            return jsonify(message="File uploaded to Azure Files successfully!"), 200
-
-    return jsonify(message="No file uploaded."), 400
-
+    return jsonify(message="Invalid file"), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
