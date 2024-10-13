@@ -38,7 +38,7 @@ def upload_to_files():
         if file:
             # Check if the app is running in Azure
             if os.environ.get('AZURE_ENVIRONMENT') == 'true':
-                file_path = os.path.join('/home/site/wwwroot/share', file.filename)  # Azure mounted path
+                file_path = os.path.join('/share', file.filename)  # Azure mounted path
             else:
                 # Use a temporary path for local development
                 file_path = os.path.join(os.getcwd(), 'uploads', file.filename)  # Local path
