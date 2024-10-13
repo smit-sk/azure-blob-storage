@@ -58,6 +58,8 @@
                 messageElement.innerText = data.message;
                 messageElement.className = "success"; // Add success class
                 messageElement.style.display = "block"; // Show message
+
+                fileList();
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -67,7 +69,35 @@
                 messageElement.style.display = "block"; // Show message
             });
         }
-    </script>
+    
+        
+
+        async function fetchFileList() {
+            const fileList = document.getElementById('fileList');
+
+            try {
+                const response = await fetch('/list_files'); // Changed to use fetch instead of axios
+                const data = await response.json(); // Parse JSON response
+                fileList.innerHTML = ''; // Clear previous list
+
+                if (data.files && data.files.length) {
+                    data.files.forEach(file => {
+                        const li = document.createElement('li');
+                        li.textContent = file;
+                        fileList.appendChild(li);
+                    });
+                } else {
+                    fileList.innerHTML = '<li>No files found</li>';
+                }
+            } catch (error) {
+                console.error('Failed to fetch file list:', error);
+                fileList.innerHTML = '<li>Error fetching files</li>';
+            }
+        }
+
+        // Fetch file list on page load
+        fetchFileList();    
+        </script>
 </head>
 <body>
     <h1>Upload File</h1>
@@ -91,6 +121,15 @@
             </form>
             <p id="fileShareMessage" style="display:none;"></p> <!-- Placeholder for Azure File Share message display, hidden by default -->
         </div>
+
     </div>
+    <div class="upload-container">
+        <div class="upload-form">
+            <h2>File List</h2>
+            <ul id="fileList"></ul>
+        </div>
+    </div>
+    
+
 </body>
 </html>

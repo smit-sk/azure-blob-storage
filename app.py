@@ -55,7 +55,7 @@ def upload_to_files():
             return jsonify(message="File uploaded successfully to Azure File Share!"), 200
         
         except Exception as azure_error:
-            
+
             try:
                 # Fallback to local storage
                 local_path = os.path.join(os.getcwd(), 'uploads')
@@ -74,6 +74,14 @@ def upload_to_files():
                 return jsonify(message=f"Failed to upload file: {str(local_error)}"), 500
 
     return jsonify(message="Invalid file"), 400
+
+@app.route('/list_files', methods=['GET'])
+def list_files():
+    try:
+        files = os.listdir('/share')
+        return jsonify(files=files)
+    except Exception as error:
+        return jsonify(error=str(error)), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
