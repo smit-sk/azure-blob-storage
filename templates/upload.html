@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <link rel="stylesheet" href="../static/style.css"> <!-- Adjust this path as needed -->
+    <script>
+        function uploadFile(event) {
+            event.preventDefault(); // Prevent the form from submitting the default way
+
+            const formData = new FormData(document.getElementById("uploadForm"));
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display success message
+                const messageElement = document.getElementById("message");
+                messageElement.innerText = data.message;
+                messageElement.className = "success"; // Add success class
+                messageElement.style.display = "block"; // Show message
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const messageElement = document.getElementById("message");
+                messageElement.innerText = "Error uploading file.";
+                messageElement.className = "error"; // Add error class
+                messageElement.style.display = "block"; // Show message
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Upload File</h1>
+    
+    <form id="uploadForm" onsubmit="uploadFile(event)">
+        <input type="file" name="file" required>
+        <input type="submit" value="Upload">
+    </form>
+
+    <p id="message" style="display:none;"></p> <!-- Placeholder for message display, hidden by default -->
+</body>
+</html>
