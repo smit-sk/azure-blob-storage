@@ -10,7 +10,7 @@ app.secret_key = 'main-secret-key'  # Replace with a real secret key
 
 # Microsoft OAuth settings
 CLIENT_ID = '678cd6ec-3584-44d9-8cf8-f87c4a28b193'
-CLIENT_SECRET = '1330458b-fe69-4acb-b16d-3ec9c7ca4d43'
+CLIENT_SECRET = '5Rl8Q~ck~adAeoCXgNzHhDk1npNZ31MGJmjpVbZh'
 AUTHORITY = 'https://login.microsoftonline.com/ce262059-46ac-47aa-82bb-7dcf70acd5c1'
 SCOPES = ['User.Read']
 REDIRECT_PATH = '/getAToken'
