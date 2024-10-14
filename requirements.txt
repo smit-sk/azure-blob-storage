@@ -1,2 +1,5 @@
 Flask==2.3.3
 azure-storage-blob==12.14.0
+msal
+Flask-Session
+requests

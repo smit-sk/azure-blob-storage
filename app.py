@@ -1,12 +1,56 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session
 from azure.storage.blob import BlobClient
+import msal
 import os
-
+#Smit@7008
+#chrisgreen@smitkhokhariyaoutlook.onmicrosoft.com
 app = Flask(__name__)
+app = Flask(__name__)
+app.secret_key = 'main-secret-key'  # Replace with a real secret key
+
+# Microsoft OAuth settings
+CLIENT_ID = '678cd6ec-3584-44d9-8cf8-f87c4a28b193'
+CLIENT_SECRET = '1330458b-fe69-4acb-b16d-3ec9c7ca4d43'
+AUTHORITY = 'https://login.microsoftonline.com/ce262059-46ac-47aa-82bb-7dcf70acd5c1'
+SCOPES = ['User.Read']
+REDIRECT_PATH = '/getAToken'
 
 @app.route('/')
 def index():
     return render_template('upload.html')
+
+@app.route('/login')
+def login():
+    auth_url = _build_msal_app().get_authorization_request_url(
+        SCOPES,
+        redirect_uri='https://p3-e4bab8g7b2dmfjbd.canadacentral-01.azurewebsites.net/getAToken'
+    )
+    return redirect(auth_url)
+
+@app.route(REDIRECT_PATH)
+def authorized():
+    result = _build_msal_app().acquire_token_by_authorization_code(
+        request.args['code'],
+        scopes=SCOPES,
+        redirect_uri='https://p3-e4bab8g7b2dmfjbd.canadacentral-01.azurewebsites.net/getAToken'
+    )
+    if 'error' in result:
+        return f"Login failed: {result['error']}"
+    session['user'] = result.get('id_token_claims')
+    return redirect(url_for('index'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(
+        f"{AUTHORITY}/oauth2/v2.0/logout"
+        f"?post_logout_redirect_uri={url_for('index', _external=True)}"
+    )
+
+def _build_msal_app():
+    return msal.ConfidentialClientApplication(
+        CLIENT_ID, authority=AUTHORITY,
+        client_credential=CLIENT_SECRET)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
@@ -69,25 +113,6 @@ def upload_to_files():
                 return jsonify(message=f"Failed to upload file: {str(local_error)}"), 500
 
     return jsonify(message="Invalid file"), 400
-
-@app.route('/list_files', methods=['GET'])
-def list_files():
-    try:
-        # List all files and directories in the mounted Azure File Share
-        files_and_folders = []
-        
-        for root, dirs, files in os.walk('/share'):
-            for directory in dirs:
-                files_and_folders.append(f"Directory: {os.path.join(root, directory)}")
-            for file in files:
-                files_and_folders.append(f"File: {os.path.join(root, file)}")
-        
-        # Return the list as a JSON response
-        return jsonify(files_and_folders=files_and_folders), 200
-
-    except Exception as e:
-        return jsonify(message=f"Error listing files: {str(e)}"), 500
-
 
 if __name__ == '__main__':
     app.run(debug=True)

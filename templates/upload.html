@@ -101,6 +101,12 @@
     </script>
 </head>
 <body>
+
+   
+    <form method="GET" action="{{ url_for('login') }}">
+        <button type="submit">Login</button>
+    </form>
+
     <h1>Upload File</h1>
     <div class="upload-container">
         <!-- Upload to Blob Storage -->
