@@ -48,7 +48,7 @@ def authorized():
     session['access_token'] = result.get('access_token')
     
     # Optional: Store user roles if they are in the token claims
-    session['roles'] = result  # This assumes roles are in the token
+    session['roles'] = session['user'].get('roles', [])  # This assumes roles are in the token
     print(session.get('roles'))
     return redirect(url_for('index'))
 
