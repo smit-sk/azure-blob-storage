@@ -47,9 +47,12 @@ def authorized():
     session['user'] = result.get('id_token_claims')
     session['access_token'] = result.get('access_token')
     
-    # Optional: Store user roles if they are in the token claims
-    session['roles'] = session['user'].get('roles', [])  # This assumes roles are in the token
-    print(session.get('roles'))
+    # Check if roles or groups are present in the token claims
+    session['roles'] = session['user'].get('roles', [])
+    session['groups'] = session['user'].get('groups', [])  # Groups if roles are missing
+
+    print("Roles:", session.get('roles'))
+    print("Groups:", session.get('groups'))
     return redirect(url_for('index'))
 
 @app.route('/logout')
