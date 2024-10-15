@@ -105,7 +105,9 @@
    
     <div style="text-align: center; margin-top: 20px; margin-bottom: 100px;">
         {% if email %}
-            <p>{{ user }}</p>
+        <p style="font-size: 18px; font-family: Arial, sans-serif;">
+            User Name: <strong>{{ user['name'] }}</strong>
+        </p>
             <p style="font-size: 18px; font-family: Arial, sans-serif;">
                 Signed in as: <strong>{{ email }}</strong>
             </p>
@@ -123,12 +125,11 @@
             </a>
         {% endif %}
     </div>
-    
+
     <div class="upload-container">
         <!-- Upload to Blob Storage -->
         <div class="upload-form">
             <h2>Upload to Azure Blob Storage</h2>
-            <h5>Assigned Role : {{ role }}</h5>
             <form id="uploadBlobForm" onsubmit="uploadToBlob(event)">
                 <input type="file" name="file" required>
                 <input type="submit" value="Upload to Blob Storage">
