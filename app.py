@@ -67,8 +67,6 @@ def _build_msal_app():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
-    if not user_has_role('Storage Blob Data Contributor'):
-        return jsonify(message="Unauthorized: You do not have permission to upload files."), 403
     if request.method == 'POST':
         file = request.files['file']
         if file:
@@ -87,9 +85,6 @@ def upload_file():
 
 @app.route('/upload_to_files', methods=['POST'])
 def upload_to_files():
-    if not user_has_role('Storage File Data Contributor'):
-        return jsonify(message="Unauthorized: You do not have permission to upload to Azure Files."), 403
-    
     if 'file' not in request.files:
         return jsonify(message="No file part"), 400
 
