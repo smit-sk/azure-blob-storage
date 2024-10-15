@@ -72,7 +72,7 @@ def upload_file():
         if file:
             # Create a BlobClient using the full SAS URL for the blob (file)
             blob_client = BlobClient.from_blob_url(
-                blob_url=f"https://demo9824791765.blob.core.windows.net/test-container/{file.filename}?sp=rcw&st=2024-10-13T15:39:23Z&se=2024-10-13T23:39:23Z&sv=2022-11-02&sr=c&sig=ETP3Dp%2BnJgUDBVP9rrAM6A%2F1fj7hyoFot8Qv543WuPg%3D"
+                blob_url=f"https://demo9824791765.blob.core.windows.net/test-container/{file.filename}?sp=rcw&st=2024-10-15T17:17:21Z&se=2024-10-17T01:17:21Z&sv=2022-11-02&sr=c&sig=YUgsfFTDJK9lELYz1CcoJsSrzZhIYzwRgH0RGN8wMnA%3D"
             )
             
             # Upload the file to Azure Blob Storage
