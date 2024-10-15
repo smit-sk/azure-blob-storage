@@ -18,7 +18,8 @@ REDIRECT_PATH = '/getAToken'
 def index():
     user = session.get('user')
     email = user.get('preferred_username') if user else None
-    return render_template('upload.html', email=email, user=user)
+    role = session.get('roles')
+    return render_template('upload.html', email=email, user=user, role=role)
 
 @app.route('/login')
 def login():
