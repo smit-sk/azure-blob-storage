@@ -115,5 +115,22 @@ def upload_to_files():
 
     return jsonify(message="Invalid file"), 400
 
+@app.route('/list_files', methods=['GET'])
+def list_files():
+    try:
+        # List all files and directories in the mounted Azure File Share
+        files_and_folders = []
+        
+        for root, dirs, files in os.walk('/share'):
+            for directory in dirs:
+                files_and_folders.append(f"Directory: {os.path.join(root, directory)}")
+            for file in files:
+                files_and_folders.append(f"File: {os.path.join(root, file)}")
+        
+        # Return the list as a JSON response
+        return jsonify(files_and_folders=files_and_folders), 200
+    except Exception as e:
+        return jsonify(message=f"Error listing files: {str(e)}"), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
