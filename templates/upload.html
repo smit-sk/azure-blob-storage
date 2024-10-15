@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
+    <title>Azure Project 3</title>
     <link rel="stylesheet" href="../static/style.css"> <!-- Adjust this path as needed -->
     <script>
         function uploadToBlob(event) {
@@ -103,11 +103,27 @@
 <body>
 
    
-    <form method="GET" action="{{ url_for('login') }}">
-        <button type="submit">Login</button>
-    </form>
+    <div style="text-align: center; margin-top: 20px; margin-bottom: 100px;">
+        {% if email %}
+            <p style="font-size: 18px; font-family: Arial, sans-serif;">
+                Signed in as: <strong>{{ email }}</strong>
+            </p>
+            <a href="{{ url_for('logout') }}" 
+               style="background-color: #ff4d4d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-family: Arial, sans-serif;">
+               Logout
+            </a>
+        {% else %}
+            <p style="font-size: 18px; font-family: Arial, sans-serif;">
+                You are not signed in.
+            </p>
+            <a href="{{ url_for('login') }}" 
+               style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-family: Arial, sans-serif;">
+               Sign in here
+            </a>
+        {% endif %}
+    </div>
 
-    <h1>Upload File</h1>
+   
     <div class="upload-container">
         <!-- Upload to Blob Storage -->
         <div class="upload-form">
@@ -131,7 +147,7 @@
 
         <!-- List of Files and Folders -->
         <div class="file-list">
-            <h2>Files and Folders in Azure File Share</h2>
+            <h2>Files in Azure File Share</h2>
             <ul id="fileList">
                 <!-- Files and folders will be dynamically loaded here -->
             </ul>

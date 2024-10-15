@@ -2,8 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for, s
 from azure.storage.blob import BlobClient
 import msal
 import os
-#Smit@7008
-#chrisgreen@smitkhokhariyaoutlook.onmicrosoft.com
+#test email - chrisgreen@smitkhokhariyaoutlook.onmicrosoft.com
 app = Flask(__name__)
 app = Flask(__name__)
 app.secret_key = 'main-secret-key'  # Replace with a real secret key
@@ -17,7 +16,9 @@ REDIRECT_PATH = '/getAToken'
 
 @app.route('/')
 def index():
-    return render_template('upload.html')
+    user = session.get('user')
+    email = user.get('preferred_username') if user else None
+    return render_template('upload.html', email=email)
 
 @app.route('/login')
 def login():
