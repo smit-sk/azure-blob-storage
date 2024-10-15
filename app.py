@@ -18,7 +18,7 @@ REDIRECT_PATH = '/getAToken'
 def index():
     user = session.get('user')
     email = user.get('preferred_username') if user else None
-    return render_template('upload.html', email=email)
+    return render_template('upload.html', email=email, user=user)
 
 @app.route('/login')
 def login():
@@ -27,6 +27,10 @@ def login():
         redirect_uri='https://p3-e4bab8g7b2dmfjbd.canadacentral-01.azurewebsites.net/getAToken'
     )
     return redirect(auth_url)
+
+def user_has_role(required_role):
+    user_roles = session.get('roles', [])
+    return required_role in user_roles
 
 @app.route(REDIRECT_PATH)
 def authorized():
@@ -37,7 +41,13 @@ def authorized():
     )
     if 'error' in result:
         return f"Login failed: {result['error']}"
+    
+    # Save the token and claims in session
     session['user'] = result.get('id_token_claims')
+    session['access_token'] = result.get('access_token')
+    
+    # Optional: Store user roles if they are in the token claims
+    session['roles'] = session['user'].get('roles', [])  # This assumes roles are in the token
     return redirect(url_for('index'))
 
 @app.route('/logout')
@@ -55,6 +65,8 @@ def _build_msal_app():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    if not user_has_role('Storage Blob Data Contributor'):
+        return jsonify(message="Unauthorized: You do not have permission to upload files."), 403
     if request.method == 'POST':
         file = request.files['file']
         if file:
@@ -73,6 +85,9 @@ def upload_file():
 
 @app.route('/upload_to_files', methods=['POST'])
 def upload_to_files():
+    if not user_has_role('Storage File Data Contributor'):
+        return jsonify(message="Unauthorized: You do not have permission to upload to Azure Files."), 403
+    
     if 'file' not in request.files:
         return jsonify(message="No file part"), 400
 
