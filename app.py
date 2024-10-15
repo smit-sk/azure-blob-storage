@@ -48,6 +48,7 @@ def authorized():
     
     # Optional: Store user roles if they are in the token claims
     session['roles'] = session['user'].get('roles', [])  # This assumes roles are in the token
+    print(session.get('roles'))
     return redirect(url_for('index'))
 
 @app.route('/logout')
